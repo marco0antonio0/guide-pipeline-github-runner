@@ -1,0 +1,29 @@
+# Arquivos temporários
+*.tmp
+*.log
+.DS_Store
+
+# Diretórios de dependências
+node_modules/
+__pycache__/
+*.pyc
+
+# Build artifacts
+dist/
+build/
+*.o
+*.exe
+
+# IDE e Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos de teste
+coverage/
+.nyc_output/
+
+# Sistema operacional
+Thumbs.db

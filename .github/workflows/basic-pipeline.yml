@@ -1,0 +1,89 @@
+# Pipeline Básica - Demonstração de Conceitos Fundamentais
+# Este workflow mostra os componentes básicos de uma pipeline do GitHub Actions
+
+name: Pipeline Básica
+
+# Eventos que acionam o workflow
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Permite execução manual
+
+# Jobs que serão executados
+jobs:
+  # Primeiro Job: Saudação
+  hello-world:
+    runs-on: ubuntu-latest  # Runner Linux (Ubuntu)
+    steps:
+      - name: Exibir mensagem de boas-vindas
+        run: echo "🚀 Bem-vindo ao GitHub Actions!"
+      
+      - name: Exibir informações do sistema
+        run: |
+          echo "🖥️ Sistema Operacional: ${{ runner.os }}"
+          echo "📁 Diretório de trabalho: ${{ github.workspace }}"
+          echo "🔧 Repositório: ${{ github.repository }}"
+          echo "🌿 Branch: ${{ github.ref }}"
+      
+      - name: Executar comandos bash
+        run: |
+          whoami
+          pwd
+          uname -a
+          df -h
+
+  # Segundo Job: Checkout e Análise
+  checkout-example:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fazer checkout do código
+        uses: actions/checkout@v4
+      
+      - name: Listar arquivos do repositório
+        run: |
+          echo "📂 Conteúdo do repositório:"
+          ls -la
+          echo ""
+          echo "🌳 Estrutura de diretórios:"
+          tree -L 2 || find . -maxdepth 2 -type d
+      
+      - name: Exibir conteúdo do README
+        run: |
+          if [ -f README.md ]; then
+            echo "📖 Primeiras linhas do README.md:"
+            head -n 10 README.md
+          fi
+
+  # Terceiro Job: Variáveis de Ambiente
+  environment-variables:
+    runs-on: ubuntu-latest
+    env:
+      GLOBAL_VAR: "Variável Global"
+    steps:
+      - name: Usar variáveis de ambiente
+        env:
+          STEP_VAR: "Variável do Step"
+        run: |
+          echo "🔐 Variáveis de Ambiente:"
+          echo "Global: $GLOBAL_VAR"
+          echo "Step: $STEP_VAR"
+          echo "Sistema: $PATH"
+      
+      - name: Criar variável personalizada
+        run: |
+          echo "CUSTOM_VAR=Valor Personalizado" >> $GITHUB_ENV
+      
+      - name: Usar variável personalizada
+        run: 'echo "Variável criada: $CUSTOM_VAR"'
+
+  # Quarto Job: Dependências entre Jobs
+  depends-on-others:
+    runs-on: ubuntu-latest
+    needs: [hello-world, checkout-example]  # Aguarda conclusão dos jobs anteriores
+    steps:
+      - name: Job executado após dependências
+        run: |
+          echo "✅ Este job só executa após 'hello-world' e 'checkout-example'"
+          echo "📊 Status: Todos os jobs anteriores foram concluídos com sucesso!"
