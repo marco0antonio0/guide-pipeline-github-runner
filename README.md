@@ -110,9 +110,6 @@ jobs:
       GITHUB_WORKSPACE: /home/server/workspace/REPO
 
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
-
       - name: Atualizar repositório
         run: |
           echo "[$(date)] Diretório do projeto: $GITHUB_WORKSPACE"
