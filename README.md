@@ -111,12 +111,9 @@ jobs:
 
     steps:
       - name: Atualizar repositório
-        run: |
-          echo "[$(date)] Diretório do projeto: $GITHUB_WORKSPACE"
-          cd $GITHUB_WORKSPACE
-          git reset --hard origin/main
-          git pull origin main --no-edit
-          echo "[$(date)] Repositório atualizado"
+        uses: actions/checkout@v4
+        with:
+          path: ${{ env.GITHUB_WORKSPACE }}
 
       - name: Build Docker Compose
         run: |
