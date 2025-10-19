@@ -94,6 +94,11 @@ O runner usará este diretório como base.
 
 ## 6️⃣ Exemplo de pipeline (Deploy Docker)
 
+### Variáveis importantes no workflow
+
+* **$GITHUB_WORKSPACE**: Diretório raiz do workspace do GitHub Actions no runner, formado por `<diretório do runner> + <nome do projeto>`.
+* **Diretório do projeto**: Nome da pasta do seu projeto dentro do workspace, geralmente coincide com o nome do repositório.
+
 ```yaml
 name: Deploy Projeto
 
@@ -106,27 +111,27 @@ jobs:
   deploy:
     runs-on: runner-default
 
-    env:
-      GITHUB_WORKSPACE: /home/server/workspace/REPO
-
     steps:
-      - name: Atualizar repositório
+      - name: Checkout do código
         uses: actions/checkout@v4
         with:
-          path: ${{ env.GITHUB_WORKSPACE }}
+          clean: false
 
       - name: Build Docker Compose
         run: |
           echo "[$(date)] Iniciando build Docker Compose"
+          cd $GITHUB_WORKSPACE
           timeout 1200 docker compose build --progress=plain || { echo "Build falhou ou timeout"; exit 1; }
 
       - name: Parar containers antigos
         run: |
+          cd $GITHUB_WORKSPACE
           echo "[$(date)] Parando containers antigos..."
           docker compose down --remove-orphans
 
       - name: Iniciar containers
         run: |
+          cd $GITHUB_WORKSPACE
           echo "[$(date)] Iniciando containers..."
           docker compose up -d || { echo "Falha ao iniciar containers"; exit 1; }
 
@@ -155,6 +160,7 @@ jobs:
 
       - name: Status final dos containers
         run: |
+          cd $GITHUB_WORKSPACE
           echo "[$(date)] Status final dos containers:"
           docker ps --format "table {{.Names}}\t{{.Status}}"
 
