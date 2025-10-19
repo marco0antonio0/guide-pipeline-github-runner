@@ -197,9 +197,6 @@ Status: ❌ Failed
 │  • Java (8, 11, 17, 21)                               │
 │  • Go (1.20, 1.21, 1.22)                              │
 │  • PHP, Ruby, .NET                                     │
-│                                                         │
-│  ⚠️ Versões mudam frequentemente. Consulte:           │
-│  https://github.com/actions/runner-images             │
 ├─────────────────────────────────────────────────────────┤
 │  Ferramentas de Dev:                                    │
 │  • Git, Docker, Docker Compose                         │
@@ -216,6 +213,8 @@ Status: ❌ Failed
 │  • MongoDB, Redis                                      │
 └─────────────────────────────────────────────────────────┘
 ```
+
+> ⚠️ **Nota**: As versões de ferramentas mudam frequentemente. Para a lista atualizada, consulte: [GitHub Actions Runner Images](https://github.com/actions/runner-images)
 
 ## 🔐 Segurança e Permissões
 
