@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/Gemini_Generated_Image_86ne9786ne9786ne.png" width="170" alt="Rota da Fé">
+  <img src="/Gemini_Generated_Image_86ne9786ne9786ne.png" width="170" alt="Github action Logo IA">
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
