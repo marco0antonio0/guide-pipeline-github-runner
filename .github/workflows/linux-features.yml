@@ -1,0 +1,219 @@
+# Pipeline Linux - Recursos Específicos do Runner Linux
+# Este workflow demonstra recursos e capacidades do runner Linux
+
+name: Recursos do Linux Runner
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  # Informações do Sistema Linux
+  system-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Informações detalhadas do sistema
+        run: |
+          echo "🐧 === INFORMAÇÕES DO SISTEMA LINUX ==="
+          echo ""
+          echo "📌 Distribuição:"
+          cat /etc/os-release
+          echo ""
+          echo "🔧 Kernel:"
+          uname -r
+          echo ""
+          echo "💾 Memória:"
+          free -h
+          echo ""
+          echo "💿 Disco:"
+          df -h
+          echo ""
+          echo "⚙️ CPU:"
+          lscpu | grep -E "Model name|CPU\(s\):|Thread"
+      
+      - name: Variáveis de ambiente do Linux
+        run: |
+          echo "📋 Variáveis de ambiente importantes:"
+          echo "HOME: $HOME"
+          echo "USER: $USER"
+          echo "SHELL: $SHELL"
+          echo "PATH: $PATH"
+
+  # Instalação de Pacotes
+  package-management:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Atualizar lista de pacotes
+        run: |
+          echo "🔄 Atualizando lista de pacotes..."
+          sudo apt-get update
+      
+      - name: Instalar pacotes do sistema
+        run: |
+          echo "📦 Instalando pacotes de exemplo..."
+          sudo apt-get install -y curl wget jq
+      
+      - name: Verificar instalação
+        run: |
+          echo "✅ Verificando versões instaladas:"
+          curl --version | head -n 1
+          wget --version | head -n 1
+          jq --version
+
+  # Docker no Runner Linux
+  docker-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar Docker
+        run: |
+          echo "🐳 Docker está pré-instalado no runner:"
+          docker --version
+          docker compose version
+      
+      - name: Executar container Docker
+        run: |
+          echo "🚢 Executando container de exemplo..."
+          docker run --rm hello-world
+      
+      - name: Usar Docker para executar comando
+        run: |
+          echo "🐍 Executando Python em container:"
+          docker run --rm python:3.11-slim python -c "print('Hello from Docker Python!')"
+      
+      - name: Listar imagens Docker
+        run: |
+          echo "📋 Imagens Docker disponíveis:"
+          docker images
+
+  # Scripts Bash Avançados
+  bash-scripting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Script bash com funções
+        run: |
+          #!/bin/bash
+          
+          # Definir função
+          function print_header() {
+            echo "================================"
+            echo "$1"
+            echo "================================"
+          }
+          
+          # Usar função
+          print_header "Script Bash Avançado"
+          
+          # Loop
+          echo "🔢 Contando de 1 a 5:"
+          for i in {1..5}; do
+            echo "  Número: $i"
+          done
+          
+          # Condicional
+          if [ $(whoami) = "runner" ]; then
+            echo "✅ Executando como usuário 'runner'"
+          fi
+          
+          # Arrays
+          languages=("Python" "JavaScript" "Go" "Rust")
+          echo "💻 Linguagens:"
+          for lang in "${languages[@]}"; do
+            echo "  - $lang"
+          done
+      
+      - name: Processar arquivos
+        run: |
+          echo "📝 Criando arquivos de teste..."
+          mkdir -p /tmp/test
+          echo "Arquivo 1" > /tmp/test/file1.txt
+          echo "Arquivo 2" > /tmp/test/file2.txt
+          
+          echo "🔍 Listando e processando arquivos:"
+          find /tmp/test -name "*.txt" -exec echo "Encontrado: {}" \;
+          
+          echo "🧹 Limpando..."
+          rm -rf /tmp/test
+
+  # Ferramentas Pré-instaladas
+  preinstalled-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ferramentas de desenvolvimento
+        run: |
+          echo "🛠️ === FERRAMENTAS PRÉ-INSTALADAS ==="
+          echo ""
+          echo "📝 Editores/Ferramentas:"
+          git --version
+          vim --version | head -n 1
+          
+          echo ""
+          echo "🔧 Linguagens de Programação:"
+          python3 --version
+          node --version
+          npm --version
+          go version
+          java -version 2>&1 | head -n 1
+          
+          echo ""
+          echo "📦 Gerenciadores de Pacotes:"
+          pip3 --version
+          gem --version
+          
+          echo ""
+          echo "🔨 Build Tools:"
+          make --version | head -n 1
+          cmake --version | head -n 1
+          gcc --version | head -n 1
+
+  # Permissões e Segurança
+  permissions-security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar permissões
+        run: |
+          echo "🔒 === PERMISSÕES E SEGURANÇA ==="
+          echo ""
+          echo "👤 Usuário atual:"
+          whoami
+          id
+          
+          echo ""
+          echo "🔑 Pode usar sudo sem senha:"
+          sudo -l | head -n 5
+      
+      - name: Criar arquivo com permissões específicas
+        run: |
+          echo "📄 Criando arquivo com permissões:"
+          touch /tmp/test-file.txt
+          chmod 644 /tmp/test-file.txt
+          ls -l /tmp/test-file.txt
+      
+      - name: Executar com sudo
+        run: |
+          echo "⚡ Executando comando com sudo:"
+          sudo echo "Sudo funcionando sem senha!"
+
+  # Networking
+  networking:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testar conectividade
+        run: |
+          echo "🌐 === TESTES DE REDE ==="
+          echo ""
+          echo "📡 Interfaces de rede:"
+          ip addr show
+          
+          echo ""
+          echo "🔍 DNS:"
+          cat /etc/resolv.conf
+      
+      - name: Fazer requisições HTTP
+        run: |
+          echo "📨 Fazendo requisição HTTP:"
+          curl -s https://api.github.com/zen
+          echo ""
+          
+          echo "📊 Headers da resposta:"
+          curl -I https://www.github.com 2>&1 | head -n 5

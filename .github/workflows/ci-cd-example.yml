@@ -1,0 +1,250 @@
+# Pipeline CI/CD - Padrões Comuns de Integração e Entrega Contínua
+# Este workflow demonstra práticas reais de CI/CD
+
+name: CI/CD Completo
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+# Definir permissões mínimas
+permissions:
+  contents: read
+
+jobs:
+  # Job de Lint e Verificação de Código
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+      
+      - name: Verificar sintaxe YAML
+        run: |
+          echo "🔍 Verificando arquivos YAML..."
+          for file in $(find .github/workflows -name "*.yml" -o -name "*.yaml"); do
+            echo "Verificando: $file"
+            if command -v yamllint &> /dev/null; then
+              yamllint "$file"
+            else
+              # Verificação básica de sintaxe
+              python3 -c "import yaml; yaml.safe_load(open('$file'))" && echo "✅ $file OK"
+            fi
+          done
+      
+      - name: Verificar arquivos Markdown
+        run: |
+          echo "📝 Verificando arquivos Markdown..."
+          if [ -f README.md ]; then
+            echo "✅ README.md encontrado"
+            wc -l README.md
+          fi
+
+  # Job de Build com Matrix Strategy
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+      fail-fast: false
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - name: Exibir versões
+        run: |
+          echo "📦 Node.js: $(node --version)"
+          echo "📦 npm: $(npm --version)"
+      
+      - name: Simular instalação de dependências
+        run: |
+          echo "📥 Instalando dependências..."
+          # Em um projeto real, seria: npm ci
+          echo "✅ Dependências instaladas (simulado)"
+      
+      - name: Simular build
+        run: |
+          echo "🔨 Executando build..."
+          # Em um projeto real, seria: npm run build
+          mkdir -p dist
+          echo "console.log('Built with Node ${{ matrix.node-version }}');" > dist/index.js
+          echo "✅ Build concluído"
+      
+      - name: Upload do artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-node-${{ matrix.node-version }}
+          path: dist/
+          retention-days: 1
+
+  # Job de Testes
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+      
+      - name: Simular testes unitários
+        run: |
+          echo "🧪 Executando testes unitários..."
+          # Em um projeto real, seria: npm test
+          sleep 2
+          echo "✅ 10 testes passaram"
+      
+      - name: Simular testes de integração
+        run: |
+          echo "🔗 Executando testes de integração..."
+          # Em um projeto real, seria: npm run test:integration
+          sleep 2
+          echo "✅ 5 testes de integração passaram"
+      
+      - name: Gerar relatório de cobertura
+        run: |
+          echo "📊 Gerando relatório de cobertura..."
+          mkdir -p coverage
+          echo "Cobertura: 85%" > coverage/report.txt
+          cat coverage/report.txt
+      
+      - name: Upload do relatório de cobertura
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+  # Job de Análise de Segurança
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+      
+      - name: Verificar vulnerabilidades
+        run: |
+          echo "🔒 Verificando vulnerabilidades..."
+          # Em um projeto real, seria: npm audit
+          echo "✅ Nenhuma vulnerabilidade crítica encontrada"
+      
+      - name: Verificar secrets expostos
+        run: |
+          echo "🔍 Verificando secrets expostos no código..."
+          # Verificação simples de padrões comuns
+          if grep -r "password\s*=\s*['\"]" . --exclude-dir=.git 2>/dev/null; then
+            echo "⚠️ Possíveis senhas encontradas no código"
+          else
+            echo "✅ Nenhum secret exposto detectado"
+          fi
+
+  # Job de Deploy (Staging)
+  deploy-staging:
+    runs-on: ubuntu-latest
+    needs: [build, test, security]
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.exemplo.com
+    steps:
+      - name: Download do artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-node-20
+      
+      - name: Simular deploy para staging
+        run: |
+          echo "🚀 Fazendo deploy para staging..."
+          echo "📦 Arquivos para deploy:"
+          ls -la
+          # Em um projeto real, seria: scp, rsync, ou deploy para cloud
+          sleep 2
+          echo "✅ Deploy para staging concluído!"
+      
+      - name: Verificar health check
+        run: |
+          echo "🏥 Verificando saúde da aplicação..."
+          # Em um projeto real, seria: curl https://staging.exemplo.com/health
+          echo "✅ Aplicação está saudável"
+
+  # Job de Deploy (Production)
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: [build, test, security]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    environment:
+      name: production
+      url: https://exemplo.com
+    steps:
+      - name: Download do artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-node-20
+      
+      - name: Simular deploy para produção
+        run: |
+          echo "🚀 Fazendo deploy para produção..."
+          echo "📦 Arquivos para deploy:"
+          ls -la
+          # Em um projeto real, seria deploy para servidor de produção
+          sleep 2
+          echo "✅ Deploy para produção concluído!"
+      
+      - name: Notificar sucesso
+        run: |
+          echo "📢 Deploy concluído com sucesso!"
+          echo "🔗 URL: https://exemplo.com"
+
+  # Job de Cache
+  cache-example:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      
+      - name: Cache de dependências
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      
+      - name: Demonstrar uso do cache
+        run: |
+          echo "💾 Cache de dependências configurado"
+          echo "✅ Nas próximas execuções, as dependências serão restauradas do cache"
+
+  # Job de Notificação Final
+  notify:
+    runs-on: ubuntu-latest
+    needs: [lint, test, security]
+    if: always()
+    steps:
+      - name: Verificar status do workflow
+        run: |
+          echo "📊 === RESUMO DO WORKFLOW ==="
+          echo "Status do Lint: ${{ needs.lint.result }}"
+          echo "Status dos Testes: ${{ needs.test.result }}"
+          echo "Status de Segurança: ${{ needs.security.result }}"
+          
+          if [ "${{ needs.lint.result }}" = "success" ] && \
+             [ "${{ needs.test.result }}" = "success" ] && \
+             [ "${{ needs.security.result }}" = "success" ]; then
+            echo "✅ Todos os checks passaram!"
+          else
+            echo "❌ Alguns checks falharam"
+          fi
