@@ -2,6 +2,12 @@
 
 Este repositório é um guia completo para entender e implementar pipelines do GitHub Actions usando runners Linux.
 
+## 📚 Documentação
+
+- **[QUICK_START.md](QUICK_START.md)** - Guia rápido para começar
+- **[WORKFLOWS.md](WORKFLOWS.md)** - Documentação detalhada dos workflows de exemplo
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Arquitetura e diagramas do GitHub Actions
+
 ## 📋 Índice
 
 - [O que é GitHub Actions?](#o-que-é-github-actions)

@@ -79,9 +79,9 @@ Evento → GitHub detecta → Workflow é acionado
 ```
 ┌─────────────────────┐
 │  Runner Pool        │
-│  ┌───┐ ┌───┐ ┌───┐ │
-│  │ R1│ │ R2│ │ R3│ │
-│  └───┘ └───┘ └───┘ │
+│  ┌────┐ ┌────┐ ┌────┐ │
+│  │ R1 │ │ R2 │ │ R3 │ │
+│  └────┘ └────┘ └────┘ │
 └─────────────────────┘
          │
          ▼ Seleciona um runner disponível
@@ -191,12 +191,15 @@ Status: ❌ Failed
 ┌─────────────────────────────────────────────────────────┐
 │                    Ubuntu Runner                         │
 ├─────────────────────────────────────────────────────────┤
-│  Linguagens:                                            │
-│  • Python (3.8, 3.9, 3.10, 3.11)                       │
-│  • Node.js (16, 18, 20)                                │
-│  • Java (8, 11, 17, 21)                                │
-│  • Go (1.20, 1.21)                                     │
+│  Linguagens (versões variam com o tempo):              │
+│  • Python (3.8, 3.9, 3.10, 3.11, 3.12)                │
+│  • Node.js (16, 18, 20, 21)                           │
+│  • Java (8, 11, 17, 21)                               │
+│  • Go (1.20, 1.21, 1.22)                              │
 │  • PHP, Ruby, .NET                                     │
+│                                                         │
+│  ⚠️ Versões mudam frequentemente. Consulte:           │
+│  https://github.com/actions/runner-images             │
 ├─────────────────────────────────────────────────────────┤
 │  Ferramentas de Dev:                                    │
 │  • Git, Docker, Docker Compose                         │

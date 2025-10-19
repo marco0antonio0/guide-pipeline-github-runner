@@ -95,7 +95,7 @@ jobs:
 4. Expanda os steps
 
 ### Posso usar isso em projetos privados?
-Sim! GitHub Actions funciona em repositórios públicos e privados (com limites de minutos gratuitos).
+Sim! GitHub Actions funciona em repositórios públicos e privados. Repositórios públicos têm minutos ilimitados, enquanto repositórios privados têm limites gratuitos (por exemplo, 2000 minutos/mês para contas gratuitas).
 
 ## 🤝 Contribuindo
 
