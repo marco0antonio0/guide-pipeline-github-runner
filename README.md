@@ -100,6 +100,21 @@ O runner usará este diretório como base.
 * **Diretório do projeto**: Nome da pasta do seu projeto dentro do workspace, geralmente coincide com o nome do repositório.
 
 ```yaml
+# =================================================================================
+# GitHub Actions Workflow: Deploy Projeto
+#
+# Variáveis importantes:
+# 
+#   $GITHUB_WORKSPACE
+#     - Diretório raiz do workspace do GitHub Actions no runner.
+#     - Formado por: <diretório do runner> + <nome do projeto>
+#
+#   Diretório do projeto
+#     - Nome da pasta do seu projeto dentro do workspace.
+#     - Geralmente coincide com o nome do repositório.
+#
+# =================================================================================
+
 name: Deploy Projeto
 
 on:
@@ -110,7 +125,8 @@ on:
 jobs:
   deploy:
     runs-on: runner-default
-
+    # env:
+    #   GITHUB_WORKSPACE: /home/server/workspace/REPO
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
@@ -167,4 +183,5 @@ jobs:
       - name: Deploy finalizado
         run: |
           echo "[$(date)] Deploy finalizado com sucesso!"
+
 ```
